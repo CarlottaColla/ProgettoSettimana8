@@ -20,7 +20,7 @@ namespace MostriVsEroi.ADO_Repository
                 SqlCommand command = new SqlCommand();
                 command.Connection = connection;
                 command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "INSERT INTO Eroi VALUES (@Nome,@Classe,@Arma,@Livello,@PuntiVita,@Giocatore,@TempoTotale);";
+                command.CommandText = "INSERT INTO Eroi VALUES (@Nome,@Classe,@Arma,@Livello,@PuntiVita,@Giocatore,@TempoTotale,@Punti);";
 
                 command.Parameters.AddWithValue("@Nome", obj.Nome);
                 command.Parameters.AddWithValue("@Classe", obj.Classe);
@@ -28,7 +28,8 @@ namespace MostriVsEroi.ADO_Repository
                 command.Parameters.AddWithValue("@Livello", obj.Livello);
                 command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
                 command.Parameters.AddWithValue("@Giocatore", obj.Giocatore);
-                command.Parameters.AddWithValue("TempoTotale", obj.TempoTotale);
+                command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
+                command.Parameters.AddWithValue("@Punti", obj.Punti);
 
                 int eseguita = command.ExecuteNonQuery();
                 if (eseguita == 1)
@@ -44,7 +45,31 @@ namespace MostriVsEroi.ADO_Repository
 
         public bool Delete(Eroi obj)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "DELETE FROM Eroi WHERE ID = @ID";
+
+                command.Parameters.AddWithValue("@ID", obj.ID);
+
+                int eseguito = command.ExecuteNonQuery();
+
+                connection.Close();
+
+                if (eseguito == 1)
+                {
+                    Console.WriteLine("Eroe elimiato");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Impossibile eliminare l'eroe");
+                    return false;
+                }
+            }
         }
 
         public IEnumerable<Eroi> GetAll()
@@ -83,7 +108,33 @@ namespace MostriVsEroi.ADO_Repository
 
         public bool Update(Eroi obj)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "UPDATE Eroi SET Livello_ID = @Livello, PuntiVita = @PuntiVita, TempoTotale = @TempoTotale, Punti = @Punti WHERE ID = @id;";
+
+                command.Parameters.AddWithValue("@ID", obj.ID);
+                command.Parameters.AddWithValue("@Livello", obj.Livello);
+                command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
+                command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
+                command.Parameters.AddWithValue("@Punti", obj.Punti);
+
+                int eseguita = command.ExecuteNonQuery();
+                if (eseguita == 1)
+                {
+                    Console.WriteLine("Eroe modificato correttamente");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Errore, eroe non inserito.");
+                    return false;
+                }
+            }
         }
     }
 }

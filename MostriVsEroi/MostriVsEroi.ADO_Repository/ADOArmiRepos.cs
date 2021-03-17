@@ -73,7 +73,26 @@ namespace MostriVsEroi.ADO_Repository
 
         public Armi GetByID(int ID)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "SELECT * FROM Armi WHERE ID = @ID";
+
+                command.Parameters.AddWithValue("@ID", ID);
+
+                SqlDataReader reader = command.ExecuteReader();
+                Armi arma = new Armi();
+
+                reader.Read();
+                arma = reader.ToArmi();
+
+                reader.Close();
+                connection.Close();
+                return arma;
+            }
         }
 
         public bool Update(Armi obj)

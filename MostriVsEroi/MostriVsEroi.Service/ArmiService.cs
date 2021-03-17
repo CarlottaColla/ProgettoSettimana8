@@ -19,5 +19,10 @@ namespace MostriVsEroi.Service
         {
             return _repo.GetAllWithFilter(id);
         }
+
+        public Armi ArmaPersonaggio(int ID)
+        {
+            return _repo.GetByID(ID);
+        }
     }
 }

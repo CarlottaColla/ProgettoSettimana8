@@ -95,5 +95,15 @@ namespace MostriVsEroi.Service
         {
             return _repo.GetAll();
         }
+
+        public void EliminaEroe(Eroi obj)
+        {
+            _repo.Delete(obj);
+        }
+
+        public void SalvaProgressi(Eroi obj)
+        {
+            _repo.Update(obj);
+        }
     }
 }

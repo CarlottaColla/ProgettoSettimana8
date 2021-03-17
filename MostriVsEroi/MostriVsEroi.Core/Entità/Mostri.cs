@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MostriVsEroi.Core.Entità
 {
-    class Mostri : Personaggi
+    public class Mostri : Personaggi
     {
     }
 }

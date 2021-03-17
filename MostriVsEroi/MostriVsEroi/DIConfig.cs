@@ -14,13 +14,17 @@ namespace MostriVsEroi
         {
             return new ServiceCollection()
                 //Aggiungo i miei servizi
-                .AddTransient<EroiService>()
-                .AddTransient<ClassiService>()
-                .AddTransient<GiocatoriService>()
+                .AddScoped<EroiService>()
+                .AddScoped<ClassiService>()
+                .AddScoped<GiocatoriService>()
+                .AddScoped<MostroService>()
+                .AddScoped<ArmiService>()
                 //Aggiungo un "servizio" che mappa l'astrazione con l'implementazione concreta
                 .AddTransient<IEroiRepository, ADOEroiRepos>()
                 .AddTransient<IClassiRepository, ADOClassiRepos>()
                 .AddTransient<IGiocatoriRepository, ADOGiocatoriRepos>()
+                .AddTransient<IMostroRepository, ADOMostroRepos>()
+                .AddTransient<IArmiRepository, ADOArmiRepos>()
                 //Provider generico di servizi
                 .BuildServiceProvider();
         }

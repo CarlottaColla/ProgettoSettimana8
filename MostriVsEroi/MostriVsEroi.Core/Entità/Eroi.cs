@@ -14,6 +14,7 @@ namespace MostriVsEroi.Core.Entità
         public Classi Classe { get; set; }
         public Armi Arma { get; set; }
         */
+        public int Punti { get; set; }
         public int Giocatore { get; set; }
         public int TempoTotale { get; set; }
 

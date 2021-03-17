@@ -19,7 +19,21 @@ namespace MostriVsEroi.ADO_Repository.Estensioni
                 Livello = (int)reader["Livello_ID"],
                 PuntiVita = (int)reader["PuntiVita"],
                 Giocatore = (int)reader["Giocatore_ID"],
-                TempoTotale = (int)reader["TempoTotale"]
+                TempoTotale = (int)reader["TempoTotale"],
+                Punti = (int)reader["Punti"]
+            };
+        }
+
+        public static Mostri ToMostro(this SqlDataReader reader)
+        {
+            return new Mostri()
+            {
+                ID = (int)reader["ID"],
+                Nome = reader["Nome"].ToString(),
+                Classe = (int)reader["Classe_ID"],
+                Arma = (int)reader["Arma_ID"],
+                Livello = (int)reader["Livello_ID"],
+                PuntiVita = (int)reader["PuntiVita"]
             };
         }
 

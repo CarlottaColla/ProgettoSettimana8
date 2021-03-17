@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "wKWWVnO10YUKxg4xcXe0Xi6+mlq5K60uTFPyQMwOeWuEyo/q84twh8/Gnmd9o5ndI/cEgatzheNo+jpKvod1Zw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\carlotta.colla\\Documents\\Progetto Eroi vs Mostri\\MostriVsEroi\\MostriVsEroi.MockRepository\\MostriVsEroi.MockRepository.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\carlotta.colla\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\carlotta.colla\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MostriVsEroi.ADO_Repository\MostriVsEroi.ADO_Repository.csproj" />
+    <ProjectReference Include="..\MostriVsEroi.Core\MostriVsEroi.Core.csproj" />
+    <ProjectReference Include="..\MostriVsEroi.MockRepository\MostriVsEroi.MockRepository.csproj" />
+  </ItemGroup>
+
+</Project>

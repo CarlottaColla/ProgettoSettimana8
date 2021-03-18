@@ -98,7 +98,29 @@ namespace MostriVsEroi.ADO_Repository
 
         public IEnumerable<Eroi> GetAllWithFilter(int ID)
         {
-            throw new NotImplementedException();
+            //Prende la lista degli eroi di un determinato giocatore
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "SELECT * FROM Eroi WHERE Giocatore_ID = @ID";
+
+                command.Parameters.AddWithValue("@ID", ID);
+
+                SqlDataReader reader = command.ExecuteReader();
+                List<Eroi> listaEroi = new List<Eroi>();
+
+                while (reader.Read())
+                {
+                    listaEroi.Add(reader.ToEroe());
+                }
+
+                reader.Close();
+                connection.Close();
+                return listaEroi;
+            }
         }
 
         public Eroi GetByID(int ID)

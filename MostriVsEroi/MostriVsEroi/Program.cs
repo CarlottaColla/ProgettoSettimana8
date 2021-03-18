@@ -7,6 +7,7 @@ namespace MostriVsEroi
     {
         static void Main(string[] args)
         {
+            
             MenuPrincipale.Menu();
         }
     }

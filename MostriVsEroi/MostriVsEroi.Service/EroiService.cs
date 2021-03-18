@@ -47,7 +47,8 @@ namespace MostriVsEroi.Service
                     }
                 }
             } while (trovato == false);
-            //Mostra lista di armi con filtro su eroe
+
+            //Mostra lista di armi con filtro sulla classe dell'eroe
             var armiService = new ArmiService(new ADOArmiRepos());
             var armiEroe = armiService.ListaArmiConFiltro(eroe.Classe);
             foreach (var item in armiEroe)
@@ -70,9 +71,18 @@ namespace MostriVsEroi.Service
                 }
             } while (trovataArma == false);
             eroe.Giocatore = giocatore.ID;
+
+            //Tutti i nuovi eroi sono di livello 1
             eroe.Livello = 1;
+
+            //Impostato a 0 perchè non ha ancora mai giocato
             eroe.TempoTotale = 0;
-            eroe.PuntiVita = 20;
+
+            //I punti vita sono relativi al livello
+            var livelliService = new LivelliService(new ADOLivelliRepos());
+            var livelloDB = livelliService.RitornaLivello(1);
+            eroe.PuntiVita = livelloDB.PuntiVita;
+
             _repo.Create(eroe);
 
             //Devo restituirlo creato
@@ -94,6 +104,11 @@ namespace MostriVsEroi.Service
         public IEnumerable<Eroi> GetAllEroi()
         {
             return _repo.GetAll();
+        }
+
+        public IEnumerable<Eroi> EroiDiUnGiocatore(int id)
+        {
+            return _repo.GetAllWithFilter(id);
         }
 
         public void EliminaEroe(Eroi obj)

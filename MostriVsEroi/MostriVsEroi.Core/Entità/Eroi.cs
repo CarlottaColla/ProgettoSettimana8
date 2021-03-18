@@ -16,7 +16,7 @@ namespace MostriVsEroi.Core.Entità
         */
         public int Punti { get; set; }
         public int Giocatore { get; set; }
-        public int TempoTotale { get; set; }
+        public long TempoTotale { get; set; }
 
         
     }

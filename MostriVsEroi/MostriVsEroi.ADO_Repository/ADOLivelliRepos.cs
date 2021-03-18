@@ -8,20 +8,20 @@ using System.Text;
 
 namespace MostriVsEroi.ADO_Repository
 {
-    public class ADOClassiRepos : IClassiRepository
+    public class ADOLivelliRepos : ILivelliRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Classi obj)
+        public void Create(Livelli obj)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(Classi obj)
+        public bool Delete(Livelli obj)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Classi> GetAll()
+        public IEnumerable<Livelli> GetAll()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -29,23 +29,28 @@ namespace MostriVsEroi.ADO_Repository
                 SqlCommand command = new SqlCommand();
                 command.Connection = connection;
                 command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Classi";
+                command.CommandText = "SELECT * FROM Livelli";
 
                 SqlDataReader reader = command.ExecuteReader();
-                List<Classi> listaClassi = new List<Classi>();
+                List<Livelli> listaLivelli = new List<Livelli>();
 
                 while (reader.Read())
                 {
-                    listaClassi.Add(reader.ToClasse());
+                    listaLivelli.Add(reader.ToLivelli());
                 }
 
                 reader.Close();
                 connection.Close();
-                return listaClassi;
+                return listaLivelli;
             }
         }
 
-        public IEnumerable<Classi> GetAllWithFilter(int ID)
+        public IEnumerable<Livelli> GetAllWithFilter(int ID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Livelli GetByID(int ID)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -53,33 +58,25 @@ namespace MostriVsEroi.ADO_Repository
                 SqlCommand command = new SqlCommand();
                 command.Connection = connection;
                 command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Classi WHERE IsEroe = @eroe";
+                command.CommandText = "SELECT * FROM Livelli WHERE ID = @ID";
 
-                command.Parameters.AddWithValue("@eroe", ID);
+                command.Parameters.AddWithValue("@ID", ID);
 
                 SqlDataReader reader = command.ExecuteReader();
-                List<Classi> listaClassi = new List<Classi>();
+                Livelli livello = new Livelli();
 
-                while (reader.Read())
-                {
-                    listaClassi.Add(reader.ToClasse());
-                }
+                reader.Read();
+                livello = reader.ToLivelli();
 
                 reader.Close();
                 connection.Close();
-                return listaClassi;
+                return livello;
             }
         }
 
-        public Classi GetByID(int ID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(Classi obj)
+        public bool Update(Livelli obj)
         {
             throw new NotImplementedException();
         }
     }
 }
-

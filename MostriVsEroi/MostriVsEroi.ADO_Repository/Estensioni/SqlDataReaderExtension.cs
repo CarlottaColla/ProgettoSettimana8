@@ -67,5 +67,16 @@ namespace MostriVsEroi.ADO_Repository.Estensioni
                 Ruolo_ID = (int)reader["Ruolo_ID"]
             };
         }
+
+        public static Livelli ToLivelli(this SqlDataReader reader)
+        {
+            return new Livelli()
+            {
+                ID = (int)reader["ID"],
+                PuntiVita = (int)reader["PuntiVita"],
+                PuntiPassaggio = (int)reader["PuntiPassaggio"],
+                Numero = (int)reader["Numero"]
+            };
+        }
     }
 }

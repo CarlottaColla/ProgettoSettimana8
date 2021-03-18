@@ -13,7 +13,26 @@ namespace MostriVsEroi.ADO_Repository
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
         public void Create(Mostri obj)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "INSERT INTO Mostri VALUES (@Nome,@Classe,@Arma,@Livello,@PuntiVita)";
+
+                command.Parameters.AddWithValue("@Nome", obj.Nome);
+                command.Parameters.AddWithValue("@Classe", obj.Classe);
+                command.Parameters.AddWithValue("@Arma", obj.Arma);
+                command.Parameters.AddWithValue("@Livello", obj.Livello);
+                command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
+
+                int n = command.ExecuteNonQuery();
+                if (n == 1) 
+                    Console.WriteLine("Mostro inserito correttamente");
+
+                connection.Close();
+            }
         }
 
         public bool Delete(Mostri obj)

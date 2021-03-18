@@ -25,22 +25,31 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Livelli";
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Livelli> listaLivelli = new List<Livelli>();
-
-                while (reader.Read())
+                try
                 {
-                    listaLivelli.Add(reader.ToLivelli());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Livelli";
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaLivelli.Add(reader.ToLivelli());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAll in livelli");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return listaLivelli;
             }
         }
@@ -54,22 +63,32 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Livelli WHERE ID = @ID";
-
-                command.Parameters.AddWithValue("@ID", ID);
-
-                SqlDataReader reader = command.ExecuteReader();
                 Livelli livello = new Livelli();
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Livelli WHERE ID = @ID";
 
-                reader.Read();
-                livello = reader.ToLivelli();
+                    command.Parameters.AddWithValue("@ID", ID);
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Read();
+                    livello = reader.ToLivelli();
+
+                    reader.Close();
+                }
+                catch (SqlException)
+                { 
+                    Console.WriteLine("Errore in GetAllWithFilter in livelli");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return livello;
             }
         }

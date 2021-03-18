@@ -15,23 +15,26 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "INSERT INTO Giocatori VALUES (@nome,@ruolo)";
-
-                command.Parameters.AddWithValue("@nome", obj.Nome);
-                command.Parameters.AddWithValue("@ruolo", obj.Ruolo_ID);
-
-                int inserito = command.ExecuteNonQuery();
-                if(inserito == 1)
+                try
                 {
-                    Console.WriteLine("Benvenuto nuovo giocatore!");
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "INSERT INTO Giocatori VALUES (@nome,@ruolo)";
+
+                    command.Parameters.AddWithValue("@nome", obj.Nome);
+                    command.Parameters.AddWithValue("@ruolo", obj.Ruolo_ID);
+
+                    command.ExecuteNonQuery();
                 }
-                else
+                catch (SqlException)
                 {
-                    Console.WriteLine("Errore nell'inserimento");
+                    Console.WriteLine("Errore nell'inserimento del nuovo giocatore");
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
         }
@@ -45,22 +48,31 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Giocatori";
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Giocatori> listaGiocatori = new List<Giocatori>();
-
-                while (reader.Read())
+                try
                 {
-                    listaGiocatori.Add(reader.ToGiocatori());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Giocatori";
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaGiocatori.Add(reader.ToGiocatori());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAll in giocatori");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return listaGiocatori;
             }
         }

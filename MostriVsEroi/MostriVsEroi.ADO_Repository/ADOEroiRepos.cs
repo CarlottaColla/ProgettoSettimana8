@@ -15,30 +15,34 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "INSERT INTO Eroi VALUES (@Nome,@Classe,@Arma,@Livello,@PuntiVita,@Giocatore,@TempoTotale,@Punti);";
-
-                command.Parameters.AddWithValue("@Nome", obj.Nome);
-                command.Parameters.AddWithValue("@Classe", obj.Classe);
-                command.Parameters.AddWithValue("@Arma", obj.Arma);
-                command.Parameters.AddWithValue("@Livello", obj.Livello);
-                command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
-                command.Parameters.AddWithValue("@Giocatore", obj.Giocatore);
-                command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
-                command.Parameters.AddWithValue("@Punti", obj.Punti);
-
-                int eseguita = command.ExecuteNonQuery();
-                if (eseguita == 1)
+                try
                 {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "INSERT INTO Eroi VALUES (@Nome,@Classe,@Arma,@Livello,@PuntiVita,@Giocatore,@TempoTotale,@Punti);";
+
+                    command.Parameters.AddWithValue("@Nome", obj.Nome);
+                    command.Parameters.AddWithValue("@Classe", obj.Classe);
+                    command.Parameters.AddWithValue("@Arma", obj.Arma);
+                    command.Parameters.AddWithValue("@Livello", obj.Livello);
+                    command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
+                    command.Parameters.AddWithValue("@Giocatore", obj.Giocatore);
+                    command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
+                    command.Parameters.AddWithValue("@Punti", obj.Punti);
+
+                    command.ExecuteNonQuery();
                     Console.WriteLine("Eroe inserito correttamente");
                 }
-                else
+                catch (SqlException)
                 {
                     Console.WriteLine("Errore, eroe non inserito.");
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
         }
@@ -47,28 +51,29 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "DELETE FROM Eroi WHERE ID = @ID";
-
-                command.Parameters.AddWithValue("@ID", obj.ID);
-
-                int eseguito = command.ExecuteNonQuery();
-
-                connection.Close();
-
-                if (eseguito == 1)
+                try
                 {
-                    Console.WriteLine("Eroe elimiato");
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "DELETE FROM Eroi WHERE ID = @ID";
+
+                    command.Parameters.AddWithValue("@ID", obj.ID);
+
+                    command.ExecuteNonQuery();
+                    Console.WriteLine("Eroe eliminato con successo");
                     return true;
                 }
-                else
+                catch (SqlException)
                 {
                     Console.WriteLine("Impossibile eliminare l'eroe");
-                    return false;
                 }
+                finally
+                {
+                    connection.Close();
+                }
+                return false;
             }
         }
 
@@ -76,22 +81,31 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Eroi";
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Eroi> listaEroi = new List<Eroi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaEroi.Add(reader.ToEroe());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Eroi";
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaEroi.Add(reader.ToEroe());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAll in eroi");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return listaEroi;
             }
         }
@@ -101,24 +115,33 @@ namespace MostriVsEroi.ADO_Repository
             //Prende la lista degli eroi di un determinato giocatore
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Eroi WHERE Giocatore_ID = @ID";
-
-                command.Parameters.AddWithValue("@ID", ID);
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Eroi> listaEroi = new List<Eroi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaEroi.Add(reader.ToEroe());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Eroi WHERE Giocatore_ID = @ID";
 
-                reader.Close();
-                connection.Close();
+                    command.Parameters.AddWithValue("@ID", ID);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaEroi.Add(reader.ToEroe());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAllWithFilter in eroi");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return listaEroi;
             }
         }
@@ -132,30 +155,34 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "UPDATE Eroi SET Livello_ID = @Livello, PuntiVita = @PuntiVita, TempoTotale = @TempoTotale, Punti = @Punti WHERE ID = @id;";
-
-                command.Parameters.AddWithValue("@ID", obj.ID);
-                command.Parameters.AddWithValue("@Livello", obj.Livello);
-                command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
-                command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
-                command.Parameters.AddWithValue("@Punti", obj.Punti);
-
-                int eseguita = command.ExecuteNonQuery();
-                if (eseguita == 1)
+                try
                 {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "UPDATE Eroi SET Livello_ID = @Livello, PuntiVita = @PuntiVita, TempoTotale = @TempoTotale, Punti = @Punti WHERE ID = @id;";
+
+                    command.Parameters.AddWithValue("@ID", obj.ID);
+                    command.Parameters.AddWithValue("@Livello", obj.Livello);
+                    command.Parameters.AddWithValue("@PuntiVita", obj.PuntiVita);
+                    command.Parameters.AddWithValue("@TempoTotale", obj.TempoTotale);
+                    command.Parameters.AddWithValue("@Punti", obj.Punti);
+
+                    command.ExecuteNonQuery();
                     Console.WriteLine("Eroe modificato correttamente");
                     return true;
                 }
-                else
+                catch (SqlException)
                 {
                     Console.WriteLine("Errore, eroe non inserito.");
-                    return false;
                 }
+                finally
+                {
+                    connection.Close();
+                }
+                return false;
             }
         }
     }

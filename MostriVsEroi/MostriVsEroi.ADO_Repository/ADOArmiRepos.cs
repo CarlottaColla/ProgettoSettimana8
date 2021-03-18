@@ -25,22 +25,31 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Armi";
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Armi> listaArmi = new List<Armi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaArmi.Add(reader.ToArmi());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Armi";
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaArmi.Add(reader.ToArmi());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore nel GetAll di armi");
+                } 
+                finally
+                {
+                    connection.Close();
+                }
                 return listaArmi;
             }
         }
@@ -49,24 +58,33 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Armi WHERE Classe_ID = @classe";
-
-                command.Parameters.AddWithValue("@classe", ID);
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Armi> listaArmi = new List<Armi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaArmi.Add(reader.ToArmi());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Armi WHERE Classe_ID = @classe";
 
-                reader.Close();
-                connection.Close();
+                    command.Parameters.AddWithValue("@classe", ID);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaArmi.Add(reader.ToArmi());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAllWithFilter di armi");
+                }
+                finally
+                {
+                    connection.Close();
+                }                
                 return listaArmi;
             }
         }
@@ -75,22 +93,32 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Armi WHERE ID = @ID";
-
-                command.Parameters.AddWithValue("@ID", ID);
-
-                SqlDataReader reader = command.ExecuteReader();
                 Armi arma = new Armi();
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Armi WHERE ID = @ID";
 
-                reader.Read();
-                arma = reader.ToArmi();
+                    command.Parameters.AddWithValue("@ID", ID);
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Read();
+                    arma = reader.ToArmi();
+
+                    reader.Close();
+                }
+                catch(SqlException)
+                {
+                    Console.WriteLine("Errore in GetById in armi");
+                }
+                finally
+                {
+                    connection.Close();
+                }                
                 return arma;
             }
         }

@@ -25,48 +25,66 @@ namespace MostriVsEroi.ADO_Repository
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Classi";
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Classi> listaClassi = new List<Classi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaClassi.Add(reader.ToClasse());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Classi";
 
-                reader.Close();
-                connection.Close();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaClassi.Add(reader.ToClasse());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAll in classi");
+                }
+                finally
+                {
+                    connection.Close();
+                }
                 return listaClassi;
             }
         }
 
-        public IEnumerable<Classi> GetAllWithFilter(int ID)
+        public IEnumerable<Classi> GetAllWithFilter(int filtro)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT * FROM Classi WHERE IsEroe = @eroe";
-
-                command.Parameters.AddWithValue("@eroe", ID);
-
-                SqlDataReader reader = command.ExecuteReader();
                 List<Classi> listaClassi = new List<Classi>();
-
-                while (reader.Read())
+                try
                 {
-                    listaClassi.Add(reader.ToClasse());
-                }
+                    connection.Open();
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT * FROM Classi WHERE IsEroe = @eroe";
 
-                reader.Close();
-                connection.Close();
+                    command.Parameters.AddWithValue("@eroe", filtro);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        listaClassi.Add(reader.ToClasse());
+                    }
+                    reader.Close();
+                }
+                catch (SqlException)
+                {
+                    Console.WriteLine("Errore in GetAllWithFilter in classi");
+                }
+                finally
+                {
+                    connection.Close();
+                }                
                 return listaClassi;
             }
         }

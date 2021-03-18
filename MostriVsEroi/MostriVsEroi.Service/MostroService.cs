@@ -16,9 +16,49 @@ namespace MostriVsEroi.Service
             _repo = repo;
         }
 
+        public void EliminaMostro()
+        {
+            //Mostro quali sono i mostri disponibili
+            List<Mostri> tuttiIMostri = new List<Mostri>(TuttiIMostri());
+            foreach(var item in tuttiIMostri)
+            {
+                Console.WriteLine($"{item.ID} - {item.Nome} di lievllo {item.Livello}");
+            }
+            
+            int nMostro = 0;
+            do
+            {
+                Console.WriteLine("Scegli il numero del mostro da eliminare: ");
+                nMostro = Convert.ToInt32(Console.ReadLine());
+                foreach (var item in tuttiIMostri)
+                {
+                    if(nMostro == item.ID)
+                    {
+                        if (_repo.Delete(item))
+                            Console.WriteLine("Mostro eliminato");
+                        return;
+                    }
+                }
+            } while (true);
+        }
+
+        public List<Mostri> TuttiIMostri()
+        {
+            return (List<Mostri>)_repo.GetAll();
+        }
+
         public IEnumerable<Mostri> ListaMostriLivelloEroe(int livello)
         {
-            return _repo.GetAllWithFilter(livello);
+            List<Mostri> mostri = new List<Mostri>(TuttiIMostri());
+            List<Mostri> mostriUtilizzabili = new List<Mostri>();
+            foreach (var item in mostri)
+            {
+                if (item.Livello == livello)
+                {
+                    mostriUtilizzabili.Add(item);
+                }
+            }
+            return mostriUtilizzabili;
         }
 
         public void CreaMostro()

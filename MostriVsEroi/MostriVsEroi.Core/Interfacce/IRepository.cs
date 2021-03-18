@@ -13,7 +13,7 @@ namespace MostriVsEroi.Core.Interfacce
         //Read
         T GetByID(int ID);
         IEnumerable<T> GetAll();
-        IEnumerable<T> GetAllWithFilter(int ID);
+        IEnumerable<T> GetAllWithFilter(int filtro);
         //Update
         bool Update(T obj);
         //Delete

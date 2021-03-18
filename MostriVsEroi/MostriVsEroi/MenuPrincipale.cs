@@ -12,6 +12,9 @@ namespace MostriVsEroi
 {
     public class MenuPrincipale
     {
+        /// <summary>
+        /// Questo è il menu che viene mostrato all'utente
+        /// </summary>
         public static void Menu()
         {
             //DIConfig
@@ -49,13 +52,8 @@ namespace MostriVsEroi
             if (giocatoreTrovato == false)
             {
                 giocatoreAttuale.Nome = nomeGiocatore;
-                int ruolo = 0;
-                do
-                {
-                    Console.WriteLine("Scegli se essere:\n1 - Utente\n2 - Admin");
-                    ruolo = Convert.ToInt32(Console.ReadLine());
-                } while (ruolo != 1 && ruolo != 2);
-                giocatoreAttuale.Ruolo_ID = ruolo;
+                //Tutti i giocatori inseriti da console sono utenti, non admin
+                giocatoreAttuale.Ruolo_ID = 1;
                 giocatoriService.CreaGiocatore(giocatoreAttuale);
                 List<Giocatori> listaGiocatori2 = new List<Giocatori>();
                 listaGiocatori2 = (List<Giocatori>)giocatoriService.ListaGiocatori();
@@ -196,9 +194,11 @@ namespace MostriVsEroi
                             break;
                         case 6:
                             //Elimina un mostro
+                            mostroService.EliminaMostro();
                             break;
                         case 7:
                             //Mostra statistiche dei giocatori
+                            Statistiche();
                             break;
                         default:
                             Console.WriteLine("Case default");
@@ -264,9 +264,11 @@ namespace MostriVsEroi
                             break;
                         case 4:
                             //Elimina un mostro
+                            mostroService.EliminaMostro();
                             break;
                         case 5:
                             //Mostra statistiche dei giocatori
+                            Statistiche();
                             break;
                         default:
                             Console.WriteLine("Case default");
@@ -276,6 +278,10 @@ namespace MostriVsEroi
             } while (esci != true);
         }
 
+        /// <summary>
+        /// Gestisce tutta la partita
+        /// </summary>
+        /// <param name="eroe">Prende l'eroe scelto dal giocatore</param>
         public static void Turno(Eroi eroe) 
         {
             //DIConfig
@@ -400,13 +406,18 @@ namespace MostriVsEroi
                     TimeSpan time = new TimeSpan(watch.ElapsedMilliseconds * 10000);
                     Console.WriteLine("Time : " + time);
                     //finita la partita salvo i progressi (solo se l'eroe non è morto)
-                    //eroe.TempoTotale += watch.ElapsedMilliseconds;
-                    //eroiService.SalvaProgressi(eroe);
+                    eroe.TempoTotale += watch.ElapsedMilliseconds;
+                    eroiService.SalvaProgressi(eroe);
                 }
             } while (giocaAncora == "si");
             
         }
 
+        /// <summary>
+        /// Il mostro può solo attaccare
+        /// </summary>
+        /// <param name="mostro">è il mostro che sta giocando</param>
+        /// <returns>ritorna i danni da infliggere all'eroe</returns>
         public static int GiocaMostro(Mostri mostro)
         {
             //DIConfig
@@ -419,9 +430,16 @@ namespace MostriVsEroi
             return armaMostro.PuntiDanno;
         }
 
-        //Int perchè così ritorna i danni subiti dal mostro/eroe e li sottraggo in Turno
-        //danniEroe serve per vedere a chi togliere i danni
-        //ritorna -1 se la fuga fallisce
+        /// <summary>
+        /// In un turno l'eroe può: combattere (infligge danni al mostro), fuggire (se ci riesce gli vengono
+        /// sottratti dei punti, se non ci riesce il turno passa al mostro)
+        /// </summary>
+        /// <param name="eroe">L'eroe che sta giocando</param>
+        /// <param name="mostro">Il mostro che sta giocando</param>
+        /// <param name="danniEroe">è un bool che viene ritornato, true = fuga fallita, devo togliere dei 
+        /// punti all'eroe, false l'eroe ha attaccato il mostro quindi devo togliergli dei punti vita,
+        /// se la fuga fallisce non lo guardo</param>
+        /// <returns>ritorna i punti da togliere all'eroe o al mostro o -1 se la fuga fallisce</returns>
         public static int GiocaEroe(Eroi eroe, Mostri mostro, out bool danniEroe) {
             //DIConfig
             var serviceProvider = DIConfig.Configurazione();
@@ -478,6 +496,10 @@ namespace MostriVsEroi
             return -1;
         }
 
+        /// <summary>
+        /// Funzione che calcola se un numero random è pari o no per stabilire se l'eroe riesce a fuggire
+        /// </summary>
+        /// <returns>true se riesce a scappare, false altrimenti</returns>
         public static bool Fuga()
         {
             //Creo un numero random: se è pari allora la fuga ha successo
@@ -486,6 +508,10 @@ namespace MostriVsEroi
             return numRandom % 2 == 0;
         }
 
+        /// <summary>
+        /// Questa funzione controlla se l'eroe è passato di livello dopo aver ucciso un mostro
+        /// </summary>
+        /// <param name="eroe">è passato per riferimento perchè se passa di livello aumenta il livello e i punti vita</param>
         public static void ControlloLivello(ref Eroi eroe)
         {
             //Se l'eroe è di livello 5 non può più passare di livello
@@ -521,6 +547,11 @@ namespace MostriVsEroi
             }
         }
 
+        /// <summary>
+        /// Questa funzione controlla se l'eroe ha vinto
+        /// </summary>
+        /// <param name="eroe">è l'eroe che sta giocando</param>
+        /// <returns>true se ha vinto, false altrimenti</returns>
         public static bool Vittoria(Eroi eroe)
         {
             //Si vince se l'eroe raggiunge i 200 punti
@@ -534,6 +565,34 @@ namespace MostriVsEroi
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Questa funzione stampa le statitiche degli eroi di ogni giocatore
+        /// </summary>
+        public static void Statistiche()
+        {
+            //DIConfig
+            var serviceProvider = DIConfig.Configurazione();
+            GiocatoriService giocatoriService = serviceProvider.GetService<GiocatoriService>();
+            EroiService eroiService = serviceProvider.GetService<EroiService>();
+
+            //Creo la lista di tutti i giocatori
+            List<Giocatori> listaGiocatori = new List<Giocatori>(giocatoriService.ListaGiocatori());
+
+            //Per ogni giocatore stampo le statistiche tutti i suoi eroi
+            foreach(var giocatore in listaGiocatori)
+            {
+                Console.WriteLine($"Statistiche del giocatore: {giocatore.Nome}");
+                List<Eroi> listaEroiDelGiocatore = new List<Eroi>(eroiService.EroiDiUnGiocatore(giocatore.ID));
+                foreach(var eroe in listaEroiDelGiocatore)
+                {
+                    TimeSpan time = new TimeSpan(eroe.TempoTotale * 10000);
+                    Console.WriteLine($"\t{eroe.Nome} di livello {eroe.Livello}: Punti {eroe.Punti}, Tempo di gioco {time}");
+                }
+            }
+            Console.WriteLine("Premi un tasto per tornare al menu principale");
+            Console.ReadKey();
         }
 
     }

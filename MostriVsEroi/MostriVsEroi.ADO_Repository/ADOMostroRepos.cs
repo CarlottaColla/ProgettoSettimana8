@@ -11,7 +11,7 @@ namespace MostriVsEroi.ADO_Repository
     public class ADOMostroRepos : IMostroRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Mostri obj)
+        public bool Create(Mostri obj)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -31,15 +31,15 @@ namespace MostriVsEroi.ADO_Repository
 
                     command.ExecuteNonQuery();
                     Console.WriteLine("Mostro inserito correttamente");
+                    connection.Close();
+                    return true;
                 }
                 catch (SqlException)
                 {
+                    connection.Close();
                     Console.WriteLine("Inserimento mostro non riusicto");
                 }
-                finally
-                {
-                    connection.Close();
-                }
+                return false;
             }
         }
 

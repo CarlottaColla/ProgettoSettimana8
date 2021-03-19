@@ -8,7 +8,13 @@ namespace MostriVsEroi.MockRepository
 {
     public class MockClassiRepository : IClassiRepository
     {
-        public void Create(Classi obj)
+        private static List<Classi> classiSalvate = new List<Classi>() { 
+            new Classi() {ID = 1, Nome = "Guerriero", IsEroe = true},
+            new Classi() {ID = 2, Nome = "Mago", IsEroe = true},
+            new Classi() {ID = 3, Nome = "Orco", IsEroe = false},
+            new Classi() {ID = 4, Nome = "SignoreDelMale", IsEroe = false},
+        };
+        public bool Create(Classi obj)
         {
             throw new NotImplementedException();
         }
@@ -20,21 +26,25 @@ namespace MostriVsEroi.MockRepository
 
         public IEnumerable<Classi> GetAll()
         {
-            throw new NotImplementedException();
+            return classiSalvate;
         }
 
-        //Dovrebbe servire perchè un admin può aggiungere anche un mostro
-        public IEnumerable<Classi> GetAllWithFilter(int ID)
+        public IEnumerable<Classi> GetAllWithFilter(int filtro)
         {
-            //L'id che mi passa è per dire che è un eroe
-            //Ritorna tutti gli eroi
-            List<Classi> classi = new List<Classi>()
+            List<Classi> classiEroe = new List<Classi>();
+            //Il filtro che mi passa è 1 se vuole le classi degli eroi e 0 se vuole quelle dei mostri
+            //è int perchè nel database salva 0 o 1, devo fare la conversione
+            bool eroe;
+            if (filtro == 1)
+                eroe = true;
+            else
+                eroe = false;
+            foreach(var item in classiSalvate)
             {
-                new Classi () {ID = 1, Nome = "Mago", IsEroe = true},
-                new Classi () {ID = 2, Nome = "Guerriero", IsEroe = true}
-            };
-            return classi;
-
+                if (item.IsEroe == eroe)
+                    classiEroe.Add(item);
+            }
+            return classiEroe;
         }
 
         public Classi GetByID(int ID)

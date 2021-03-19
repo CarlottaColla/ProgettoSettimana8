@@ -7,7 +7,7 @@ namespace MostriVsEroi
     {
         static void Main(string[] args)
         {
-            
+            //Il menu principale gestisce l'intera applicazione
             MenuPrincipale.Menu();
         }
     }

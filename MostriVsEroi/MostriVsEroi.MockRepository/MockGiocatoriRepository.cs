@@ -7,9 +7,15 @@ namespace MostriVsEroi.MockRepository
 {
     public class MockGiocatoriRepository : IGiocatoriRepository
     {
-        public void Create(Giocatori obj)
+        private static List<Giocatori> giocatoriSalvati = new List<Giocatori>() { 
+            new Giocatori() {ID = 1, Nome = "Admin", Ruolo_ID = 2}
+        };
+        public bool Create(Giocatori obj)
         {
-            throw new NotImplementedException();
+            giocatoriSalvati.Add(obj);
+            if (giocatoriSalvati.Contains(obj))
+                return true;
+            return false;
         }
 
         public bool Delete(Giocatori obj)
@@ -19,7 +25,7 @@ namespace MostriVsEroi.MockRepository
 
         public IEnumerable<Giocatori> GetAll()
         {
-            throw new NotImplementedException();
+            return giocatoriSalvati;
         }
 
         public IEnumerable<Giocatori> GetAllWithFilter(int ID)

@@ -11,7 +11,7 @@ namespace MostriVsEroi.ADO_Repository
     public class ADOGiocatoriRepos : IGiocatoriRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Giocatori obj)
+        public bool Create(Giocatori obj)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -27,15 +27,15 @@ namespace MostriVsEroi.ADO_Repository
                     command.Parameters.AddWithValue("@ruolo", obj.Ruolo_ID);
 
                     command.ExecuteNonQuery();
+                    connection.Close();
+                    return true;
                 }
-                catch (SqlException)
-                {
-                    Console.WriteLine("Errore nell'inserimento del nuovo giocatore");
-                }
-                finally
+                catch (SqlException e)
                 {
                     connection.Close();
+                    Console.WriteLine("Errore nell'inserimento del nuovo giocatore.\nIl nome deve essere univoco, riprova: ");
                 }
+                return false;
             }
         }
 

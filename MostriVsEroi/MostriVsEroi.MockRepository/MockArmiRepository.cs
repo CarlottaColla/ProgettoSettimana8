@@ -8,7 +8,14 @@ namespace MostriVsEroi.MockRepository
 {
     public class MockArmiRepository : IArmiRepository
     {
-        public void Create(Armi obj)
+        private static List<Armi> armiSalvate = new List<Armi>()
+        {
+            new Armi () {ID =1, ClassiID =1, Nome="Spada", PuntiDanno=10},
+            new Armi () {ID =2, ClassiID =2, Nome="Bacchetta", PuntiDanno=11},
+            new Armi () {ID =3, ClassiID =3, Nome="Mazza", PuntiDanno=9},
+            new Armi () {ID =4, ClassiID =4, Nome="Arco", PuntiDanno=13}
+        };
+        public bool Create(Armi obj)
         {
             throw new NotImplementedException();
         }
@@ -20,22 +27,15 @@ namespace MostriVsEroi.MockRepository
 
         public IEnumerable<Armi> GetAll()
         {
-            throw new NotImplementedException();
+            return armiSalvate;
         }
 
         public IEnumerable<Armi> GetAllWithFilter(int ID)
         {
             //L'id che mi passa è per dire di che classe è
-            List<Armi> armi = new List<Armi>()
-            {
-                new Armi() {ID = 1, Nome="Spadone di ferro", PuntiDanno= 10, ClassiID = 1 },
-                new Armi() {ID = 2, Nome="Arco", PuntiDanno= 8, ClassiID =2 },
-                new Armi() {ID = 3, Nome="Ascia", PuntiDanno= 11, ClassiID=1 },
-
-            };
             //Ritorna solo quelle della classe
             List<Armi> armiDellaClasse = new List<Armi>();
-            foreach (var item in armi)
+            foreach (var item in armiSalvate)
             {
                 if (item.ClassiID == ID)
                 {
@@ -47,7 +47,12 @@ namespace MostriVsEroi.MockRepository
 
         public Armi GetByID(int ID)
         {
-            throw new NotImplementedException();
+            foreach(var item in armiSalvate)
+            {
+                if (item.ID == ID)
+                    return item;
+            }
+            return new Armi();
         }
 
         public bool Update(Armi obj)

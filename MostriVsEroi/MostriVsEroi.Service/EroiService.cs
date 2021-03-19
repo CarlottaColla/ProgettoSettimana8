@@ -21,11 +21,29 @@ namespace MostriVsEroi.Service
             Eroi eroe = new Eroi();
             //ID, Nome, Classe, Arma, Livello, TempoTotale = 0, PuntiVita
             //L'id lo inserisce il db
+
+            //Il nome deve essere univoco, lo confronto con gli eroi già inseriti
             Console.WriteLine("Inserisci il nome del tuo eroe: ");
             string nome = Console.ReadLine();
+            bool univoco = true;
+            do
+            {
+                univoco = true;
+                List<Eroi> listaEroi = new List<Eroi>(GetAllEroi());
+                foreach (var item in listaEroi)
+                {
+                    if (nome == item.Nome)
+                    {
+                        Console.WriteLine("Il nome dell'eroe deve essere univoco, riprova: ");
+                        nome = Console.ReadLine();
+                        univoco = false;
+                    }
+                }
+            } while (univoco != true);
             eroe.Nome = nome;
             Console.WriteLine("Le classi disponibili sono: ");
             //Mostra lista di classi con filtro su eroe
+            //var classiService = new ClassiService(new MockClassiRepository());
             var classiService = new ClassiService(new ADOClassiRepos());
             var classiEroi = classiService.ListaClassiConFiltro(1);
             foreach(var item in classiEroi)
@@ -49,6 +67,7 @@ namespace MostriVsEroi.Service
             } while (trovato == false);
 
             //Mostra lista di armi con filtro sulla classe dell'eroe
+            //var armiService = new ArmiService(new MockArmiRepository());
             var armiService = new ArmiService(new ADOArmiRepos());
             var armiEroe = armiService.ListaArmiConFiltro(eroe.Classe);
             foreach (var item in armiEroe)
@@ -79,6 +98,7 @@ namespace MostriVsEroi.Service
             eroe.TempoTotale = 0;
 
             //I punti vita sono relativi al livello
+            //var livelliService = new LivelliService(new MockLivelliRepository());
             var livelliService = new LivelliService(new ADOLivelliRepos());
             var livelloDB = livelliService.RitornaLivello(1);
             eroe.PuntiVita = livelloDB.PuntiVita;

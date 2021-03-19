@@ -8,35 +8,37 @@ namespace MostriVsEroi.MockRepository
 {
     public class MockEroiRepository : IEroiRepository
     {
-        public void Create(Eroi obj)
+        private static List<Eroi> eroiSalvati = new List<Eroi>();
+        public bool Create(Eroi obj)
         {
-            //Insert
-            new Eroi()
-            {
-                ID = obj.ID,
-                Nome = obj.Nome,
-                Classe = obj.Classe,
-                Arma = obj.Arma,
-                Livello = obj.Livello,
-                TempoTotale = 0,
-                PuntiVita = obj.PuntiVita
-            };
-            Console.WriteLine("Eroe creato!");
+            eroiSalvati.Add(obj);
+            if (eroiSalvati.Contains(obj))
+                return true;
+            return false;
         }
 
         public bool Delete(Eroi obj)
         {
-            throw new NotImplementedException();
+            eroiSalvati.Remove(obj);
+            if(eroiSalvati.Contains(obj))
+                return false;
+            return true;
         }
 
         public IEnumerable<Eroi> GetAll()
         {
-            throw new NotImplementedException();
+            return eroiSalvati;
         }
 
         public IEnumerable<Eroi> GetAllWithFilter(int ID)
         {
-            throw new NotImplementedException();
+            List<Eroi> eroiDiUnGiocatore = new List<Eroi>();
+            foreach(var item in eroiSalvati)
+            {
+                if (item.Giocatore == ID)
+                    eroiDiUnGiocatore.Add(item);
+            }
+            return eroiDiUnGiocatore;
         }
 
         public Eroi GetByID(int ID)
@@ -46,7 +48,18 @@ namespace MostriVsEroi.MockRepository
 
         public bool Update(Eroi obj)
         {
-            throw new NotImplementedException();
+            foreach(var item in eroiSalvati)
+            {
+                if(item.ID == obj.ID)
+                {
+                    item.Livello = obj.Livello;
+                    item.Punti = obj.Punti;
+                    item.PuntiVita = obj.PuntiVita;
+                    item.TempoTotale = obj.TempoTotale;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MostriVsEroi.ADO_Repository;
 using MostriVsEroi.Core.Interfacce;
+using MostriVsEroi.MockRepository;
 using MostriVsEroi.Service;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,12 @@ namespace MostriVsEroi
                 .AddScoped<ArmiService>()
                 .AddScoped<LivelliService>()
                 //Aggiungo un "servizio" che mappa l'astrazione con l'implementazione concreta
+                //.AddTransient<IEroiRepository, MockEroiRepository>()
+                //.AddTransient<IClassiRepository, MockClassiRepository>()
+                //.AddTransient<IGiocatoriRepository, MockGiocatoriRepository>()
+                //.AddTransient<IMostroRepository, MockMostroRepository>()
+                //.AddTransient<IArmiRepository, MockArmiRepository>()
+                //.AddTransient<ILivelliRepository, MockLivelliRepository>()
                 .AddTransient<IEroiRepository, ADOEroiRepos>()
                 .AddTransient<IClassiRepository, ADOClassiRepos>()
                 .AddTransient<IGiocatoriRepository, ADOGiocatoriRepos>()

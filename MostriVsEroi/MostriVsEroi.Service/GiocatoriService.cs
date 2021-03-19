@@ -21,9 +21,9 @@ namespace MostriVsEroi.Service
             return _repo.GetAll();
         }
 
-        public void CreaGiocatore (Giocatori obj)
+        public bool CreaGiocatore (Giocatori obj)
         {
-            _repo.Create(obj);
+            return _repo.Create(obj);            
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MostriVsEroi.ADO_Repository
     public class ADOClassiRepos : IClassiRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Classi obj)
+        public bool Create(Classi obj)
         {
             throw new NotImplementedException();
         }

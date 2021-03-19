@@ -9,7 +9,7 @@ namespace MostriVsEroi.Core.Interfacce
         //CRUD
 
         //Insert
-        void Create(T obj);
+        bool Create(T obj);
         //Read
         T GetByID(int ID);
         IEnumerable<T> GetAll();

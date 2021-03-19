@@ -11,7 +11,7 @@ namespace MostriVsEroi.ADO_Repository
     public class ADOLivelliRepos : ILivelliRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Livelli obj)
+        public bool Create(Livelli obj)
         {
             throw new NotImplementedException();
         }

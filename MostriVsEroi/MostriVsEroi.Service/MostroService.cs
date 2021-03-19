@@ -1,6 +1,7 @@
 ﻿using MostriVsEroi.ADO_Repository;
 using MostriVsEroi.Core.Entità;
 using MostriVsEroi.Core.Interfacce;
+using MostriVsEroi.MockRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -67,9 +68,26 @@ namespace MostriVsEroi.Service
             //Nome, Classe, Arma, Livello, PuntiVita
             Console.WriteLine("Inserisci il nome del mostro: ");
             string nome = Console.ReadLine();
+            //Il nome deve essere univoco
+            bool univoco = true;
+            do
+            {
+                univoco = true;
+                List<Mostri> listaMostri = new List<Mostri>(TuttiIMostri());
+                foreach (var item in listaMostri)
+                {
+                    if (nome == item.Nome)
+                    {
+                        Console.WriteLine("Il nome del mostro deve essere univoco, riprova: ");
+                        nome = Console.ReadLine();
+                        univoco = false;
+                    }
+                }
+            } while (univoco != true);
             mostro.Nome = nome;
             Console.WriteLine("Le classi disponibili sono: ");
             //Mostra lista di classi con filtro su mostro
+            //var classiService = new ClassiService(new MockClassiRepository());
             var classiService = new ClassiService(new ADOClassiRepos());
             var classiEroi = classiService.ListaClassiConFiltro(0);
             foreach (var item in classiEroi)
@@ -92,7 +110,8 @@ namespace MostriVsEroi.Service
                 }
             } while (trovato == false);
 
-            //Mostra lista di armi con filtro sula categoria del mostro
+            //Mostra la lista delle armi con filtro sulla categoria del mostro
+            //var armiService = new ArmiService(new MockArmiRepository());
             var armiService = new ArmiService(new ADOArmiRepos());
             var armiEroe = armiService.ListaArmiConFiltro(mostro.Classe);
             Console.WriteLine("Le armi disponibili sono: ");
@@ -115,6 +134,7 @@ namespace MostriVsEroi.Service
                     }
                 }
             } while (trovataArma == false);
+            //L'admin può scegliere il livello del mostro
             int livello = 0;
             do
             {
@@ -126,6 +146,7 @@ namespace MostriVsEroi.Service
             mostro.Livello = livello;
 
             //I punti vita sono relativi al livello
+            //var livelliService = new LivelliService(new MockLivelliRepository());
             var livelliService = new LivelliService(new ADOLivelliRepos());
             var livelloDB = livelliService.RitornaLivello(livello);
             mostro.PuntiVita = livelloDB.PuntiVita;

@@ -11,7 +11,7 @@ namespace MostriVsEroi.ADO_Repository
     public class ADOEroiRepos : IEroiRepository
     {
         const string connectionString = @"Persist Security Info = False; Integrated Security = true; Initial Catalog=MostriVsEroi; Server = .\SQLEXPRESS";
-        public void Create(Eroi obj)
+        public bool Create(Eroi obj)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -34,16 +34,16 @@ namespace MostriVsEroi.ADO_Repository
                     command.Parameters.AddWithValue("@Punti", obj.Punti);
 
                     command.ExecuteNonQuery();
+                    connection.Close();
                     Console.WriteLine("Eroe inserito correttamente");
+                    return true;
                 }
                 catch (SqlException)
                 {
+                    connection.Close();
                     Console.WriteLine("Errore, eroe non inserito.");
                 }
-                finally
-                {
-                    connection.Close();
-                }
+                return false;
             }
         }
 
@@ -62,7 +62,7 @@ namespace MostriVsEroi.ADO_Repository
                     command.Parameters.AddWithValue("@ID", obj.ID);
 
                     command.ExecuteNonQuery();
-                    Console.WriteLine("Eroe eliminato con successo");
+                    //Console.WriteLine("Eroe eliminato con successo");
                     return true;
                 }
                 catch (SqlException)
@@ -171,7 +171,7 @@ namespace MostriVsEroi.ADO_Repository
                     command.Parameters.AddWithValue("@Punti", obj.Punti);
 
                     command.ExecuteNonQuery();
-                    Console.WriteLine("Eroe modificato correttamente");
+                    //Console.WriteLine("Eroe modificato correttamente");
                     return true;
                 }
                 catch (SqlException)

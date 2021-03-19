@@ -99,46 +99,48 @@ namespace MostriVsEroi
                 Console.Write("EROI\n");
                 Console.ForegroundColor = ConsoleColor.White;
 
-                //Se ha già degli eroi può: continuare con un eroe, eliminarne uno, crearlo e uscire
+                //Se ha già degli eroi può: continuare con un eroe, eliminarne uno, crearlo, vedere le statistiche e uscire
                 if (listaEroi.Count > 0)
                 {
                     Console.WriteLine("Menu principale:");
                     Console.WriteLine("1 - Crea un nuovo Eroe");
                     Console.WriteLine("2 - Continua con un Eroe");
                     Console.WriteLine("3 - Elimina un Eroe");
-                    Console.WriteLine("4 - Salva ed esci");
+                    Console.WriteLine("4 - Guarda le statistiche dei tuoi eroi");
+                    Console.WriteLine("5 - Salva ed esci");
 
                     //Se è admin può creare e cancellare i mostri e vedere le statistiche dei giocatori
                     if(giocatoreAttuale.Ruolo_ID == 2)
                     {
-                        Console.WriteLine("5 - Crea un nuovo mostro");
-                        Console.WriteLine("6 - Elimina un mostro");
-                        Console.WriteLine("7 - Guarda le statistiche");
+                        Console.WriteLine("6 - Crea un nuovo mostro");
+                        Console.WriteLine("7 - Elimina un mostro");
+                        Console.WriteLine("8 - Guarda le statistiche globali");
                     }
                     int index = 0;
-                    //Se non è admin può scegliere solo 4 opzioni
+                    bool corretto = false;
+                    //Se non è admin può scegliere solo 5 opzioni
                     if (giocatoreAttuale.Ruolo_ID == 1)
                     {
                         do
                         {
-                            index = Convert.ToInt32(Console.ReadLine());
-                            if (index < 1 || index > 5)
+                            corretto = Int32.TryParse(Console.ReadLine(), out index);
+                            if (corretto == false || index < 1 || index > 6)
                             {
                                 Console.WriteLine("Comando non riconosciuto, riprova");
                             }
-                        } while (index < 1 || index > 5);
+                        } while (corretto == false || index < 1 || index > 6);
                     }
-                    //Se è admin può scegliere tra 7 opzioni
+                    //Se è admin può scegliere tra 8 opzioni
                     else
                     {
                         do
                         {
-                            index = Convert.ToInt32(Console.ReadLine());
-                            if (index < 1 || index > 7)
+                            corretto = Int32.TryParse(Console.ReadLine(), out index);
+                            if (corretto == false || index < 1 || index > 8)
                             {
                                 Console.WriteLine("Comando non riconosciuto, riprova");
                             }
-                        } while (index < 1 || index > 7);
+                        } while (corretto == false || index < 1 || index > 8);
                     }
 
                     switch (index)
@@ -146,6 +148,8 @@ namespace MostriVsEroi
                         case 1:
                             //Crea un nuovo eroe
                             Eroi eroeCreato = eroiService.CreateEroe(giocatoreAttuale);
+                            Console.WriteLine("Premi un tasto per iniziare il turno");
+                            Console.ReadKey();
                             Partita.Turno(eroeCreato);
                             break;
                         case 2:
@@ -156,20 +160,27 @@ namespace MostriVsEroi
                             }
                             //Deve scegliere l'eroe
                             bool eroeGiusto = false;
+                            Console.WriteLine("Inserisci il numero dell'eroe:");
                             do
                             {
-                                Console.WriteLine("Inserisci il numero dell'eroe:");
-                                int nEroe = Convert.ToInt32(Console.ReadLine());
-                                foreach (var item in listaEroi)
+                                bool isCorretto = Int32.TryParse(Console.ReadLine(), out int nEroe);
+                                if (isCorretto == true)
                                 {
-                                    if (nEroe == item.ID)
+                                    foreach (var item in listaEroi)
                                     {
-                                        eroeGiusto = true;
-                                        //Quando seleziona l'eroe inizia il turno
-                                        Partita.Turno(item);
-                                        break;
+                                        if (nEroe == item.ID)
+                                        {
+                                            eroeGiusto = true;
+                                            //Quando seleziona l'eroe inizia il turno
+                                            Console.WriteLine("Premi un tasto per iniziare il turno");
+                                            Console.ReadKey();
+                                            Partita.Turno(item);
+                                            break;
+                                        }
                                     }
                                 }
+                                if (isCorretto == false || eroeGiusto == false)
+                                    Console.WriteLine("Eroe non corretto, riprova:");
                             } while (eroeGiusto == false);
                             break;
                         case 3:
@@ -180,38 +191,53 @@ namespace MostriVsEroi
                             }
                             //Deve scegliere l'eroe
                             bool eroeDaEliminare = false;
+                            Console.WriteLine("Inserisci il numero dell'eroe da eliminare:");
                             do
                             {
-                                Console.WriteLine("Inserisci il numero dell'eroe da eliminare:");
-                                int nEroe = Convert.ToInt32(Console.ReadLine());
-                                foreach (var item in listaEroi)
+                                bool eroeCorretto = Int32.TryParse(Console.ReadLine(), out int nEroe);
+                                if (eroeCorretto == true)
                                 {
-                                    if (nEroe == item.ID)
+                                    foreach (var item in listaEroi)
                                     {
-                                        eroeDaEliminare = true;
-                                        //Quando seleziona l'eroe lo elimino
-                                        eroiService.EliminaEroe(item);
-                                        break;
+                                        if (nEroe == item.ID)
+                                        {
+                                            eroeDaEliminare = true;
+                                            //Quando seleziona l'eroe lo elimino
+                                            eroiService.EliminaEroe(item);
+                                            break;
+                                        }
                                     }
                                 }
+                                if (eroeCorretto == false || eroeDaEliminare == false)
+                                    Console.WriteLine("Eroe non valido, riprova:");
                             } while (eroeDaEliminare == false);
+                            Console.WriteLine("Premi un tasto per continuare");
+                            Console.ReadKey();
                             break;
                         case 4:
+                            //Mostra le statistiche del giocatore attuale
+                            Partita.StatisticheUtente(giocatoreAttuale);
+                            break;
+                        case 5:
                             //Esce
                             //Non faccio nessuna operazione perchè tutte quelle precedenti sono già state salvate
                             Console.WriteLine("Arrivederci!");
                             esci = true;
                             break;
                         //Questi può sceglierli solo un admin
-                        case 5:
+                        case 6:
                             //Crea un nuovo mostro
                             mostroService.CreaMostro();
-                            break;
-                        case 6:
-                            //Elimina un mostro
-                            mostroService.EliminaMostro();
+                            Console.WriteLine("Premi un tasto per continuare");
+                            Console.ReadKey();
                             break;
                         case 7:
+                            //Elimina un mostro
+                            mostroService.EliminaMostro();
+                            Console.WriteLine("Premi un tasto per continuare");
+                            Console.ReadKey();
+                            break;
+                        case 8:
                             //Mostra statistiche dei giocatori
                             Partita.Statistiche();
                             break;
@@ -235,29 +261,30 @@ namespace MostriVsEroi
                         Console.WriteLine("5 - Guarda le statistiche");
                     }
                     int index = 0;
+                    bool corretto = false;
                     //Se non è admin può scegliere solo 2 opzioni
                     if (giocatoreAttuale.Ruolo_ID == 1)
                     {
                         do
                         {
-                            index = Convert.ToInt32(Console.ReadLine());
-                            if (index != 1 && index != 2)
+                            corretto = Int32.TryParse(Console.ReadLine(), out index);
+                            if (corretto == false || index != 1 && index != 2)
                             {
                                 Console.WriteLine("Comando non riconosciuto, riprova");
                             }
-                        } while (index != 1 && index != 2);
+                        } while (corretto == false || index != 1 && index != 2);
                     }
                     //Se è admin può scegliere tra 5 opzioni
                     else
                     {
                         do
                         {
-                            index = Convert.ToInt32(Console.ReadLine());
-                            if (index < 1 || index > 5)
+                            corretto = Int32.TryParse(Console.ReadLine(), out index);
+                            if (corretto == false || index < 1 || index > 5)
                             {
                                 Console.WriteLine("Comando non riconosciuto, riprova");
                             }
-                        } while (index < 1 || index > 5);
+                        } while (corretto == false || index < 1 || index > 5);
                     }
 
                     switch (index)
@@ -265,6 +292,8 @@ namespace MostriVsEroi
                         case 1:
                             //Crea un nuovo eroe
                             Eroi eroeCreato = eroiService.CreateEroe(giocatoreAttuale);
+                            Console.WriteLine("Premi un tasto per iniziare il turno");
+                            Console.ReadKey();
                             Partita.Turno(eroeCreato);
                             break;
                         case 2:
@@ -277,10 +306,14 @@ namespace MostriVsEroi
                         case 3:
                             //Crea un nuovo mostro
                             mostroService.CreaMostro();
+                            Console.WriteLine("Premi un tasto per continuare");
+                            Console.ReadKey();
                             break;
                         case 4:
                             //Elimina un mostro
                             mostroService.EliminaMostro();
+                            Console.WriteLine("Premi un tasto per continuare");
+                            Console.ReadKey();
                             break;
                         case 5:
                             //Mostra statistiche dei giocatori

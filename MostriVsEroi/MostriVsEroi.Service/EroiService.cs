@@ -51,19 +51,24 @@ namespace MostriVsEroi.Service
                 Console.WriteLine($"{item.ID} - {item.Nome}");
             }
             bool trovato = false;
+            Console.WriteLine("Inserisci il numero della classe: ");
             do
             {
-                Console.WriteLine("Inserisci il numero della classe che vuoi: ");
-                int idClasse = Convert.ToInt32(Console.ReadLine());
-                foreach (var item in classiEroi)
+                bool corretto = Int32.TryParse(Console.ReadLine(), out int classe);
+                if (corretto == true)
                 {
-                    if (item.ID == idClasse)
+                    foreach (var item in classiEroi)
                     {
-                        trovato = true;
-                        eroe.Classe = item.ID;
-                        break;
+                        if (item.ID == classe)
+                        {
+                            trovato = true;
+                            eroe.Classe = item.ID;
+                            break;
+                        }
                     }
                 }
+                if(corretto == false || trovato == false)
+                    Console.WriteLine("Classe non trovata, riprova");
             } while (trovato == false);
 
             //Mostra lista di armi con filtro sulla classe dell'eroe
@@ -75,19 +80,24 @@ namespace MostriVsEroi.Service
                 Console.WriteLine($"{item.ID} - {item.Nome}");
             }
             bool trovataArma = false;
+            Console.WriteLine("Inserisci il numero dell'arma che vuoi: ");
             do
             {
-                Console.WriteLine("Inserisci il numero dell'arma che vuoi: ");
-                int idArma = Convert.ToInt32(Console.ReadLine());
-                foreach (var item in armiEroe)
+                bool corretto = Int32.TryParse(Console.ReadLine(), out int idArma);
+                if (corretto == true)
                 {
-                    if (item.ID == idArma)
+                    foreach (var item in armiEroe)
                     {
-                        trovataArma = true;
-                        eroe.Arma = item.ID;
-                        break;
+                        if (item.ID == idArma)
+                        {
+                            trovataArma = true;
+                            eroe.Arma = item.ID;
+                            break;
+                        }
                     }
                 }
+                if(corretto == false || trovataArma == false)
+                    Console.WriteLine("Arma non trovata, riprova:");
             } while (trovataArma == false);
             eroe.Giocatore = giocatore.ID;
 
@@ -116,7 +126,6 @@ namespace MostriVsEroi.Service
                 }
 
             }
-            Console.WriteLine("Errore nella Creazione");
             return new Eroi();
 
         }

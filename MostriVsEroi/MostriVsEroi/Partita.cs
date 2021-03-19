@@ -143,20 +143,18 @@ namespace MostriVsEroi
                 //Se è morto l'eroe torna direttamente al menu, non può decidere di non salvare
                 if (eroe.PuntiVita <= 0) break;
                 //Se ha vinto può decidere se continuare o se tornare salvando o no
-                int scelta = 1;
-                do
-                {
-                    if (scelta < 1 || scelta > 3)
-                        Console.WriteLine("Comando non valido, riprova:");
-                    else
-                    {
-                        Console.WriteLine("Il turno è finito, cosa vuoi fare?\n" +
+                Console.WriteLine("Il turno è finito, cosa vuoi fare?\n" +
                         "1 - Giocare ancora\n" +
                         "2 - Salva e torna al menu\n" +
                         "3 - Torna al menu senza salvare");
-                    }
-                    scelta = Convert.ToInt32(Console.ReadLine());
-                } while (scelta < 1 || scelta > 3);
+                int scelta = 0;
+                bool corretta = false;
+                do
+                {
+                    corretta = Int32.TryParse(Console.ReadLine(), out scelta);
+                    if (corretta == false || scelta < 1 || scelta > 3)
+                        Console.WriteLine("Comando non valido, riprova:");
+                } while (corretta == false || scelta < 1 || scelta > 3);
 
                 //Se decide di non salvare torna al menu principale
                 if (scelta == 3)
@@ -220,21 +218,18 @@ namespace MostriVsEroi
             danniEroe = false;
 
             int scelta = 0;
-            do
-            {
-                Console.WriteLine("è il turno dell'eroe cosa vuoi fare?\n" +
+            bool corretto = false;
+            Console.WriteLine("è il turno dell'eroe cosa vuoi fare?\n" +
                     "1 - Attacca!\n" +
                     "2 - Scappa");
-                scelta = Convert.ToInt32(Console.ReadLine());
-                if (scelta == 1 || scelta == 2)
+            do
+            {
+                corretto = Int32.TryParse(Console.ReadLine(), out scelta);
+                if (corretto == false || scelta != 1 && scelta != 2)
                 {
-                    break;
+                    Console.WriteLine("Comando non riconosciuto, riprova:");
                 }
-                else
-                {
-                    Console.WriteLine("Comando non valido, riprova");
-                }
-            } while (true);
+            } while (corretto == false || scelta != 1 && scelta != 2);
 
             //Attacco
             if (scelta == 1)
@@ -336,6 +331,30 @@ namespace MostriVsEroi
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Questa funzione stampa le statistiche degli eroi di un giocatore.
+        /// Può essere chiamata solo se un giocatore ha degli eroi
+        /// </summary>
+        /// <param name="giocatore"> è il giocatore attuale </param>
+        public static void StatisticheUtente(Giocatori giocatore)
+        {
+            //DIConfig
+            var serviceProvider = DIConfig.Configurazione();
+            EroiService eroiService = serviceProvider.GetService<EroiService>();
+
+            //Visualizzo le statistiche degli eroi del giocatore
+            //Non controllo se non ha eroi perchè può chiamare questa funzione solo se ha degli eroi
+            List<Eroi> listaEroiDelGiocatore = new List<Eroi>(eroiService.EroiDiUnGiocatore(giocatore.ID));
+            Console.WriteLine("Ecco le statistiche dei tuoi giocatori:");
+            foreach (var item in listaEroiDelGiocatore)
+            {
+                TimeSpan time = new TimeSpan(item.TempoTotale * 10000);
+                Console.WriteLine($"\t{item.Nome}\tLivello: {item.Livello}\tPunti accumulati: {item.Punti}\tTempo di gioco: {time}");
+            }
+            Console.WriteLine("Premi un tasto per tornare al menu principale");
+            Console.ReadKey();
         }
 
         /// <summary>

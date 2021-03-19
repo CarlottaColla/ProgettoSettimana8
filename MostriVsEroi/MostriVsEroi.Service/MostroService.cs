@@ -27,19 +27,24 @@ namespace MostriVsEroi.Service
             }
             
             int nMostro = 0;
+            Console.WriteLine("Scegli il numero del mostro da eliminare: ");
             do
             {
-                Console.WriteLine("Scegli il numero del mostro da eliminare: ");
-                nMostro = Convert.ToInt32(Console.ReadLine());
-                foreach (var item in tuttiIMostri)
+
+                bool corretto = Int32.TryParse(Console.ReadLine(), out nMostro);
+                if (corretto == true)
                 {
-                    if(nMostro == item.ID)
+                    foreach (var item in tuttiIMostri)
                     {
-                        if (_repo.Delete(item))
-                            Console.WriteLine("Mostro eliminato");
-                        return;
+                        if (nMostro == item.ID)
+                        {
+                            _repo.Delete(item);
+                            return;
+                        }
                     }
+
                 }
+                Console.WriteLine("Numero non corretto, riprova:");
             } while (true);
         }
 
@@ -54,7 +59,7 @@ namespace MostriVsEroi.Service
             List<Mostri> mostriUtilizzabili = new List<Mostri>();
             foreach (var item in mostri)
             {
-                if (item.Livello == livello)
+                if (item.Livello <= livello)
                 {
                     mostriUtilizzabili.Add(item);
                 }
@@ -94,20 +99,25 @@ namespace MostriVsEroi.Service
             {
                 Console.WriteLine($"{item.ID} - {item.Nome}");
             }
-            bool trovato = false;
+            bool trovato = false; 
+            Console.WriteLine("Inserisci il numero della classe che vuoi: ");
             do
             {
-                Console.WriteLine("Inserisci il numero della classe che vuoi: ");
-                int idClasse = Convert.ToInt32(Console.ReadLine());
-                foreach (var item in classiEroi)
+                bool corretto = Int32.TryParse(Console.ReadLine(), out int idClasse);
+                if (corretto == true)
                 {
-                    if (item.ID == idClasse)
+                    foreach (var item in classiEroi)
                     {
-                        trovato = true;
-                        mostro.Classe = item.ID;
-                        break;
+                        if (item.ID == idClasse)
+                        {
+                            trovato = true;
+                            mostro.Classe = item.ID;
+                            break;
+                        }
                     }
                 }
+                if(trovato != true || corretto == false)
+                    Console.WriteLine("Numero non corretto, riprova:");
             } while (trovato == false);
 
             //Mostra la lista delle armi con filtro sulla categoria del mostro
@@ -120,28 +130,34 @@ namespace MostriVsEroi.Service
                 Console.WriteLine($"{item.ID} - {item.Nome}");
             }
             bool trovataArma = false;
+            Console.WriteLine("Inserisci il numero dell'arma che vuoi: ");
             do
             {
-                Console.WriteLine("Inserisci il numero dell'arma che vuoi: ");
-                int idArma = Convert.ToInt32(Console.ReadLine());
-                foreach (var item in armiEroe)
+                bool corretto = Int32.TryParse(Console.ReadLine(), out int idArma);
+                if (corretto == true)
                 {
-                    if (item.ID == idArma)
+                    foreach (var item in armiEroe)
                     {
-                        trovataArma = true;
-                        mostro.Arma = item.ID;
-                        break;
+                        if (item.ID == idArma)
+                        {
+                            trovataArma = true;
+                            mostro.Arma = item.ID;
+                            break;
+                        }
                     }
                 }
+                if (trovataArma != true || corretto == false)
+                    Console.WriteLine("Numero non corretto, riprova:");
             } while (trovataArma == false);
             //L'admin può scegliere il livello del mostro
+            Console.WriteLine("Inserisci il livello del mostro da 1 a 5:");
             int livello = 0;
             do
             {
-                Console.WriteLine("Inserisci il livello del mostro da 1 a 5:");
-                livello = Convert.ToInt32(Console.ReadLine());
-                if (livello > 0 && livello < 6)
+                bool corretto = Int32.TryParse(Console.ReadLine(), out livello);
+                if (corretto == true && livello > 0 && livello < 6)
                     break;
+                Console.WriteLine("Livello non corretto, riprova:");
             } while (true);
             mostro.Livello = livello;
 
